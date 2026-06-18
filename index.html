@@ -4,171 +4,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>ITRH Assistant</title>
-
+    <title>ITRH Assistant Core v2.0</title>
     <link rel="stylesheet" href="style.css">
-
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-    <div class="fondo"></div>
-
-    <div class="contenedor">
-
-        <!-- ENCABEZADO -->
-
-        <header class="header">
-
-            <div class="logo.jpg">
-                <span>IA</span>
-            </div>
-
-            <h1>ITRH Assistant / Tu inteligencia artificial Perfecta</h1>
-
-            <p class="subtitulo">
-                Asistente Virtual Inteligente
-            </p>
-
-        </header>
-
-        <!-- INFORMACIÓN DEL INSTITUTO -->
-
-        <section class="institucion">
-
-            <h2>
-                Instituto Gubernamental Técnico República de Holanda
-            </h2>
-
-            <p>
-                El Pedernal, El Porvenir, Francisco Morazán, Honduras
-            </p>
-
-            <p>
-                Proyecto desarrollado para la Feria de Ciencias y Tecnología 2026.
-            </p>
-
-            <p>
-                Desarrollado por:
-                <strong> 11vo BTPI</strong>
-            </p>
-
-        </section>
-
-        <!-- CHAT -->
-
-        <section class="chat">
-
-            <div class="chat-superior">
-
-                <div class="estado"></div>
-
-                <span>
-                    ITRH Assistant esta en Línea
-                </span>
-
-            </div>
-
-            <div class="chat-box" id="chat-box">
-
-                <div class="mensaje bot">
-
-                    <div class="avatar">
-                        AI
-                    </div>
-
-                    <div class="contenido">
-
-                        <strong>¡Bienvenido! Estoy para ayudarte👋</strong>
-
-                        <br><br>
-
-                        Soy <strong>ITRH Assistant</strong>.
-
-                        Estoy preparado para responder preguntas sobre:
-
-                        <ul>
-                            <li>El instituto</li>
-                            <li>La feria de ciencias</li>
-                            <li>Tecnología</li>
-                            <li>Quien te creo</li>
-                            <li>El proyecto</li>
-                        </ul>
-
-                        Escribe tu pregunta abajo.
-
-                    </div>
-
+    <div class="app-container anim-entrada">
+        
+        <!-- MINI PANEL DE MENÚS (SIDEBAR) -->
+        <aside class="sidebar">
+            <div class="branding">
+                <div class="logo-wrapper" id="logo-click-zone" title="Haz clic para cambiar el logo">
+                    <img src="logo.jpg" alt="Logo ITRH" id="app-logo">
+                    <div class="logo-overlay"><span>Subir</span></div>
                 </div>
-
+                <input type="file" id="logo-uploader" accept="image/*" style="display: none;">
+                <h2 class="siglas-ia">ITRH<span>.ai</span></h2>
             </div>
 
-            <!-- BOTONES RÁPIDOS -->
-
-            <div class="acciones">
-
-                <button class="pregunta">
-                    ¿Qué es el ITRH?
+            <nav class="menu-navegacion">
+                <button class="menu-btn activo" data-tab="inicio">
+                    <span class="icon">🏠</span> Inicio
                 </button>
-
-                <button class="pregunta">
-                    Donde estan Ubicados
+                <button class="menu-btn" data-tab="asistente">
+                    <span class="icon">💬</span> Asistente IA
                 </button>
-
-                <button class="pregunta">
-                    Quien es el Director
+                <button class="menu-btn" data-tab="cultura">
+                    <span class="icon">🌍</span> Conocimiento
                 </button>
+            </nav>
 
-                <button class="pregunta">
-                    Ubicacion
-                </button>
-
-                <button class="pregunta">
-                    Carreras Disponibles
-                </button>
-
-                <button class="pregunta">
-                    Porque te Crearon
-                </button>
-
+            <div class="sidebar-footer">
+                <p>© 2026 | 11vo BTPI</p>
             </div>
+        </aside>
 
-            <!-- ENTRADA -->
+        <!-- CONTENIDO PRINCIPAL DINÁMICO -->
+        <main class="main-content">
+            
+            <!-- PESTAÑA 1: INICIO -->
+            <section id="tab-inicio" class="tab-content activo">
+                <header class="content-header">
+                    <h1>Instituto Gubernamental Técnico República de Holanda</h1>
+                    <p class="tagline">Innovación · Educación · Progreso</p>
+                </header>
 
-            <div class="entrada">
+                <div class="grid-info">
+                    <div class="tarjeta-info">
+                        <h3>📍 Ubicación Estratégica</h3>
+                        <p>Aldea El Pedernal, Municipio de El Porvenir, Departamento de Francisco Morazán, Honduras.</p>
+                    </div>
+                    <div class="tarjeta-info">
+                        <h3>🎓 Oferta Académica</h3>
+                        <p>Líderes en el Bachillerato Técnico Profesional en Informática (BTPI) y Bachillerato en Ciencias y Humanidades.</p>
+                    </div>
+                    <div class="tarjeta-info completo">
+                        <h3>🔬 Proyecto de Feria de Ciencias 2026</h3>
+                        <p>Desarrollado con arquitectura web moderna por el grupo de expertos de <strong>11vo BTPI</strong>. Este asistente interactivo implementa reconocimiento de voz nativo y respuestas optimizadas.</p>
+                    </div>
+                </div>
+            </section>
 
-                <input
-                    type="text"
-                    id="user-input"
-                    placeholder="Escribe tu pregunta..."
-                >
+            <!-- PESTAÑA 2: EL CHATBOT -->
+            <section id="tab-asistente" class="tab-content">
+                <div class="chat-wrapper">
+                    <div class="chat-header">
+                        <div class="indicador-estado">
+                            <span class="punto-verde"></span>
+                            <div>
+                                <h4>ITRH Assistant</h4>
+                                <small>Procesamiento de Voz Activo (es-HN)</small>
+                            </div>
+                        </div>
+                    </div>
 
-                <button id="send-btn">
-                    ➜
-                </button>
+                    <div class="chat-box" id="chat-box">
+                        <div class="mensaje bot">
+                            <div class="avatar">AI</div>
+                            <div class="contenido">
+                                <strong>¡Hola! Bienvenid@ al núcleo del asistente virtual 👋</strong><br><br>
+                                Estoy listo para responder tus dudas. ¡Puedes escribirme o presionar el micrófono para hablar!
+                            </div>
+                        </div>
+                    </div>
 
-            </div>
+                    <!-- Sugerencias dinámicas -->
+                    <div class="acciones-rapidas">
+                        <button class="pregunta">¿Quién es el director?</button>
+                        <button class="pregunta">¿Quién descubrió Honduras?</button>
+                        <button class="pregunta">¿Qué es la IA?</button>
+                        <button class="pregunta">¿Capital de Francia?</button>
+                    </div>
 
-        </section>
+                    <!-- Barra de entrada de texto/audio -->
+                    <div class="input-area">
+                        <input type="text" id="user-input" placeholder="Escribe o haz una pregunta en voz alta..." autocomplete="off">
+                        <button id="mic-btn" title="Dictado por voz">🎙️</button>
+                        <button id="send-btn">➜</button>
+                    </div>
+                </div>
+            </section>
 
-        <!-- FOOTER -->
+            <!-- PESTAÑA 3: CONOCIMIENTO -->
+            <section id="tab-cultura" class="tab-content">
+                <header class="content-header">
+                    <h2>Módulos de Conocimiento</h2>
+                    <p>Explora algunas de las temáticas que tengo integradas de fábrica.</p>
+                </header>
+                <div class="grid-conocimiento">
+                    <div class="bloque-modulo">
+                        <h4>🇭🇳 Identidad Nacional</h4>
+                        <p>Historia de Honduras, héroes nacionales (Morazán, Lempira), geografía y símbolos patrios.</p>
+                    </div>
+                    <div class="bloque-modulo">
+                        <h4>🌌 Ciencia y Cultura General</h4>
+                        <p>Astronomía básica, geografía mundial, datos curiosos y conceptos científicos universales.</p>
+                    </div>
+                    <div class="bloque-modulo">
+                        <h4>💻 Informática y Código</h4>
+                        <p>Fundamentos de HTML5, CSS3, JavaScript y el rol de las ingenierías en el desarrollo técnico.</p>
+                    </div>
+                </div>
+            </section>
 
-        <footer>
-
-            <p>
-                © 2026 ITRH Assistant | Feria de Ciencias y Tecnología / 11vo BTPI
-            </p>
-
-        </footer>
-
+        </main>
     </div>
 
     <script src="script.js"></script>
-    <logo src="logo.jpg"></logo>
-
 </body>
 
 </html>
