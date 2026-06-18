@@ -39,7 +39,7 @@ const respuestas = {
 
     "carreras":"El instituto ofrece modalidades técnicas y académicas según la oferta educativa vigente Humanidades, Informatica Tecnico.",
 
-    "porque te crearon":"Se utilizo en La Feria de Ciencias y Tecnología permite a los estudiantes presentar proyectos innovadores y demostrar sus conocimientos.",
+    "porque te crearon":"Se utilizo en La Feria de Ciencias y Tecnología permite a los estudiantes presentar proyectos innovadores y demostrar sus conocimientospor parte de los estudiantes 11vo BTPI.",
 
     "proyecto":"Este proyecto consiste en un asistente virtual capaz de responder preguntas sobre el instituto, la educación y la tecnología.",
 
