@@ -1,161 +1,232 @@
-:root {
-    --bg-dark-app: #0b0f19;
-    --bg-dark-card: #131a2e;
-    --bg-dark-hover: #1e2642;
-    --accent-blue: #3b82f6;
-    --accent-glow: #2563eb;
-    --accent-green: #10b981;
-    --text-main: #f1f5f9;
-    --text-muted: #94a3b8;
-    --border-soft: rgba(255, 255, 255, 0.06);
-}
+document.addEventListener("DOMContentLoaded", () => {
+    
+    // VARIABLES ELEMENTALES
+    const chatBox = document.getElementById("chat-box");
+    const input = document.getElementById("user-input");
+    const sendBtn = document.getElementById("send-btn");
+    const micBtn = document.getElementById("mic-btn");
+    const botonesRapidos = document.querySelectorAll(".pregunta");
+    
+    const tabs = document.querySelectorAll(".menu-btn");
+    const tabContents = document.querySelectorAll(".tab-content");
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
+    const logoClickZone = document.getElementById("logo-click-zone");
+    const logoUploader = document.getElementById("logo-uploader");
+    const appLogo = document.getElementById("app-logo");
 
-body {
-    background-color: var(--bg-dark-app);
-    color: var(--text-main);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 15px;
-    overflow-x: hidden;
-}
+    // 1. CONTROL DE PESTAÑAS (MENÚ SIDEBAR) - ULTRA SEGURO
+    if (tabs && tabs.length > 0) {
+        tabs.forEach(tab => {
+            if (!tab) return;
+            tab.addEventListener("click", () => {
+                // Limpiar botones activos de forma segura
+                tabs.forEach(t => {
+                    if (t) t.classList.remove("activo");
+                });
+                
+                // Limpiar contenidos activos de forma segura
+                if (tabContents) {
+                    tabContents.forEach(c => {
+                        if (c) c.classList.remove("activo");
+                    });
+                }
 
-.anim-entrada {
-    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
+                // Activar pestaña seleccionada
+                tab.classList.add("activo");
+                
+                const targetTab = tab.getAttribute("data-tab");
+                if (targetTab) {
+                    // Cambiado a concatenación tradicional con comillas normales para evitar fallos de lectura
+                    const targetElement = document.getElementById("tab-" + targetTab);
+                    if (targetElement) {
+                        targetElement.classList.add("activo");
+                    }
+                }
+            });
+        });
+    }
 
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-}
+    // 2. CONTROL DEL CARGADOR DE LOGO PERSONALIZADO
+    if (logoClickZone && logoUploader && appLogo) {
+        logoClickZone.addEventListener("click", () => {
+            logoUploader.click();
+        });
 
-.app-container {
-    width: 100%;
-    max-width: 1100px;
-    height: 680px;
-    background: rgba(19, 26, 46, 0.4);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border-soft);
-    border-radius: 24px;
-    display: flex;
-    overflow: hidden;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
-}
+        logoUploader.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    appLogo.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
 
-.sidebar {
-    width: 240px;
-    background: #0f1424;
-    border-right: 1px solid var(--border-soft);
-    display: flex;
-    flex-direction: column;
-    padding: 25px 15px;
-}
+    // 3. BASE DE DATOS DE CONOCIMIENTO
+    const respuestas = {
+        "director": "El director de nuestra prestigiosa institución es el profesor Juan Edilberto Ortega, caracterizado por mantener una administración con altos estándares de excelencia.",
+        "subdirector": "El subdirector encargado del área académica del centro es el profesor Raúl Elvir.",
+        "secretario": "El secretario general encargado del control de expedientes y registros es el profesor Osman Barahona.",
+        "consejeros": "El departamento de orientación y consejería estudiantil está conformado por los profesores Renán Pantoja, Manuel Arteaga y Víctor Gómez.",
+        "docentes": "El cuerpo docente está integrado por ingenieros y licenciados altamente calificados, incluyendo al profesor Víctor Gómez en las asignaturas de orientación técnica.",
+        "alumnos": "El Instituto cuenta actualmente con una matrícula robusta de aproximadamente 282 estudiantes distribuidos en las jornadas vigentes.",
+        "fundacion": "Nuestra institución fue fundada con orgullo en noviembre del año 1990 bajo el esfuerzo unificado de la aldea El Pedernal.",
+        "historia": "Iniciamos labores con secciones 1 y 2 de ciclo común, atendiendo entre 30 y 40 estudiantes. Las primeras clases históricas se impartieron en los predios de Rubenia y en el centro comunal.",
+        "carreras": "Actualmente ofrecemos formación media avanzada: Bachillerato Técnico Profesional en Informática (BTPI) y Bachillerato en Ciencias y Humanidades.",
+        "itrh": "El Instituto Técnico República de Holanda es un pilar fundamental en El Porvenir, Francisco Morazán, enfocado en dotar a Honduras de profesionales técnicos de primer nivel.",
+        "quien descubrio honduras": "Honduras fue descubierta por Cristóbal Colón en su cuarto y último viaje al continente americano, en el año 1502, llegando a las costas de Trujillo.",
+        "heroes nacionales": "Los héroes y próceres nacionales de Honduras son: el Cacique Lempira, el General Francisco Morazán, José Cecilio del Valle, Dionisio de Herrera y el General José Trinidad Cabañas.",
+        "capital de honduras": "La capital de la República de Honduras es el Distrito Central, conformado geográficamente por las ciudades hermanas de Tegucigalpa y Comayagüela.",
+        "capital de francia": "La capital oficial de la República Francesa es la hermosa e histórica ciudad de París.",
+        "velocidad de la luz": "La velocidad de la luz en el vacío es de aproximadamente 299,792 kilómetros por segundo (299,792 km/s).",
+        "fotosintesis": "La fotosíntesis es el proceso biológico mediante el cual las plantas, algas y algunas bacterias convierten la luz solar, agua y dióxido de carbono en oxígeno y nutrientes energéticos.",
+        "primer hombre en la luna": "El primer ser humano en pisar la superficie lunar fue el astronauta estadounidense Neil Armstrong, el 20 de julio de 1969, durante la histórica misión Apolo 11.",
+        "ia": "La Inteligencia Artificial es la disciplina científica e informática dedicada a la creación de sistemas capaces de emular procesos cognitivos humanos, como el razonamiento y el autoaprendizaje.",
+        "inteligencia artificial": "La Inteligencia Artificial automatiza tareas masivas, resuelve ecuaciones complejas y procesa lenguaje natural (como el motor algorítmico que ejecuta este chat).",
+        "html": "HTML (HyperText Markup Language) es el estándar técnico que define la semántica y estructura jerárquica de cualquier página web en el mundo.",
+        "css": "CSS (Cascading Style Sheets) es el lenguaje encargado del ecosistema visual y estético de la web, manipulando diseños de cuadrículas, colores y animaciones complejas.",
+        "javascript": "JavaScript es el lenguaje de programación de alto nivel interpretado que permite dar lógica dinámica, procesar eventos en tiempo real y conectar periféricos como el micrófono de tu PC.",
+        "proyecto": "Este software interactivo fue desarrollado como propuesta de vanguardia para la Feria de Ciencias y Tecnología 2026, demostrando la aplicación práctica del desarrollo front-end.",
+        "creadores": "Esta plataforma inteligente fue estructurada, diseñada y programada por el equipo técnico avanzado de estudiantes de 11vo BTPI.",
+        "hola": "¡Hola! Bienvenido al centro de control del ITRH Assistant. ¿Qué consulta técnica o histórica deseas realizar hoy?",
+        "buenos dias": "¡Muy buenos días! Que tengas una jornada muy productiva. Estoy listo para procesar tus preguntas.",
+        "buenas tardes": "¡Buenas tardes! ¿En qué puedo colaborar con tu investigación sobre el instituto el día de hoy?",
+        "buenas noches": "¡Buenas noches! Monitoreando sistemas en línea. ¿Tienes dudas sobre alguna carrera o dato cultural?",
+        "gracias": "¡Es un absoluto placer! Estoy programado para servir a la comunidad del 11vo BTPI.",
+        "adios": "¡Sistemas cerrados con éxito! Gracias por interactuar con el ITRH Assistant. ¡Muchos éxitos!"
+    };
 
-.branding { text-align: center; margin-bottom: 35px; }
+    function obtenerHora() {
+        return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    }
 
-.logo-wrapper {
-    width: 85px; height: 85px; margin: 0 auto 12px;
-    border-radius: 50%; position: relative; cursor: pointer;
-    overflow: hidden; background: #fff; border: 2px solid var(--accent-blue);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+    function agregarMensaje(texto, tipo) {
+        if (!chatBox) return;
+        const mensaje = document.createElement("div");
+        mensaje.classList.add("mensaje", tipo);
 
-.logo-wrapper:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
-}
+        mensaje.innerHTML = `
+            <div class="avatar">${tipo === "bot" ? "AI" : "TÚ"}</div>
+            <div class="contenido">
+                ${texto}
+                <br><br>
+                <small style="font-size: 0.7rem; opacity: 0.6; display: block; text-align: right;">${obtenerHora()}</small>
+            </div>
+        `;
 
-.logo-wrapper img { width: 100%; height: 100%; object-fit: contain; }
+        chatBox.appendChild(mensaje);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
 
-.logo-overlay {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(11, 15, 25, 0.8); display: flex;
-    justify-content: center; align-items: center; opacity: 0; transition: opacity 0.2s ease;
-}
+    function buscarRespuesta(texto) {
+        const normalizado = texto.toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[¿?¡!]/g, "");
 
-.logo-overlay span { font-size: 0.75rem; color: #fff; font-weight: 500; }
-.logo-wrapper:hover .logo-overlay { opacity: 1; }
-.siglas-ia { font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; }
-.siglas-ia span { color: var(--accent-blue); }
+        for (let clave in respuestas) {
+            const claveNormalizada = clave.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            if (normalizado.includes(claveNormalizada)) {
+                return respuestas[clave];
+            }
+        }
+        return "No cuento con ese dato específico en mi almacenamiento local, te invito a reformular tu pregunta o consultar sobre las autoridades de la institución.";
+    }
 
-.menu-navegacion { display: flex; flex-direction: column; gap: 8px; }
+    function toggleEscribiendo(mostrar) {
+        if (!chatBox) return;
+        if (mostrar) {
+            const typing = document.createElement("div");
+            typing.classList.add("mensaje", "bot");
+            typing.id = "typing";
+            chatBox.appendChild(typing);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        } else {
+            const typing = document.getElementById("typing");
+            if (typing) typing.remove();
+        }
+    }
 
-.menu-btn {
-    background: transparent; border: none; color: var(--text-muted);
-    padding: 12px 16px; text-align: left; font-size: 0.9rem; border-radius: 12px;
-    cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.25s ease;
-}
+    function procesarPregunta(pregunta) {
+        if (pregunta.trim() === "") return;
+        agregarMensaje(pregunta, "usuario");
+        toggleEscribiendo(true);
 
-.menu-btn:hover { background: var(--bg-dark-hover); color: var(--text-main); transform: translateX(4px); }
+        const respuesta = buscarRespuesta(pregunta);
 
-.menu-btn.activo {
-    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-glow) 100%);
-    color: #fff; font-weight: 500; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-}
+        setTimeout(() => {
+            toggleEscribiendo(false);
+            agregarMensaje(respuesta, "bot");
+        }, 750);
+    }
 
-.sidebar-footer { margin-top: auto; text-align: center; font-size: 0.7rem; color: var(--text-muted); }
-.main-content { flex: 1; padding: 30px; position: relative; background: radial-gradient(circle at 90% 10%, rgba(59, 130, 246, 0.05) 0%, transparent 50%); }
+    // 4. CONTROLADORES DE EVENTOS DEL CHAT
+    if (sendBtn && input) {
+        sendBtn.addEventListener("click", () => {
+            const val = input.value.trim();
+            if (val === "") return;
+            procesarPregunta(val);
+            input.value = "";
+        });
 
-.tab-content { display: none; height: 100%; flex-direction: column; }
-.tab-content.activo { display: flex; animation: fadeIn 0.4s ease forwards; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        input.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") sendBtn.click();
+        });
+    }
 
-.content-header h1 {
-    font-size: 1.6rem; margin-bottom: 4px;
-    background: linear-gradient(to right, #fff, var(--text-muted));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.tagline { font-size: 0.85rem; color: var(--accent-blue); margin-bottom: 25px; font-weight: 500; }
+    if (botonesRapidos.length > 0) {
+        botonesRapidos.forEach(btn => {
+            btn.addEventListener("click", () => {
+                procesarPregunta(btn.textContent.trim());
+            });
+        });
+    }
 
-.grid-info, .grid-conocimiento { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-.tarjeta-info, .bloque-modulo { background: var(--bg-dark-card); border: 1px solid var(--border-soft); padding: 20px; border-radius: 16px; transition: transform 0.3s ease; }
-.tarjeta-info:hover, .bloque-modulo:hover { transform: translateY(-3px); border-color: rgba(59, 130, 246, 0.2); }
-.tarjeta-info h3, .bloque-modulo h4 { color: var(--accent-blue); margin-bottom: 8px; font-size: 1rem; }
-.tarjeta-info p, .bloque-modulo p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
-.completo { grid-column: span 2; }
+    // 5. CONTROLADOR DEL MICRÓFONO (SISTEMA DE AUDIO)
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-.chat-wrapper { display: flex; flex-direction: column; height: 100%; background: #0d1222; border: 1px solid var(--border-soft); border-radius: 16px; overflow: hidden; }
-.chat-header { background: var(--bg-dark-card); padding: 12px 20px; border-bottom: 1px solid var(--border-soft); }
-.indicador-estado { display: flex; align-items: center; gap: 12px; }
-.punto-verde { width: 10px; height: 10px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 10px var(--accent-green); }
-.indicador-estado h4 { font-size: 0.9rem; }
-.indicador-estado small { font-size: 0.75rem; color: var(--text-muted); }
+    if (SpeechRecognition && micBtn && input) {
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'es-HN';
+        recognition.interimResults = false;
 
-.chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: radial-gradient(rgba(59, 130, 246, 0.02) 1px, transparent 0); background-size: 16px 16px; }
-.mensaje { display: flex; gap: 12px; animation: msgSlide 0.3s ease forwards; }
-@keyframes msgSlide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        micBtn.addEventListener('click', () => {
+            if (micBtn.classList.contains('recording')) {
+                recognition.stop();
+            } else {
+                try {
+                    recognition.start();
+                } catch (err) {
+                    console.log("El reconocimiento ya inició o fue bloqueado localmente.");
+                }
+            }
+        });
 
-.mensaje.bot .avatar { background: var(--accent-blue); width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 0.7rem; font-weight: 700; }
-.mensaje.usuario { flex-direction: row-reverse; }
-.mensaje.usuario .avatar { background: var(--bg-dark-hover); width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 0.7rem; }
+        recognition.onstart = () => {
+            micBtn.classList.add('recording');
+            micBtn.textContent = '🛑';
+            input.placeholder = 'Transcribiendo tu voz...';
+        };
 
-.contenido { background: var(--bg-dark-card); border: 1px solid var(--border-soft); padding: 12px 16px; border-radius: 0 16px 16px 16px; max-width: 75%; font-size: 0.85rem; line-height: 1.4; }
-.mensaje.usuario .contenido { background: var(--accent-blue); border-radius: 16px 0 16px 16px; }
+        recognition.onspeechend = () => recognition.stop();
 
-.acciones-rapidas { display: flex; gap: 8px; padding: 10px 15px; overflow-x: auto; }
-.pregunta { background: var(--bg-dark-card); border: 1px solid var(--border-soft); color: var(--text-main); padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; white-space: nowrap; transition: all 0.2s ease; }
-.pregunta:hover { background: var(--accent-blue); border-color: var(--accent-blue); transform: scale(1.04); }
+        recognition.onend = () => {
+            micBtn.classList.remove('recording');
+            micBtn.textContent = '🎙️';
+            input.placeholder = 'Escribe o haz una pregunta en voz alta...';
+        };
 
-.input-area { display: flex; padding: 12px 15px; gap: 8px; background: #090d16; border-top: 1px solid var(--border-soft); }
-#user-input { flex: 1; background: var(--bg-dark-card); border: 1px solid var(--border-soft); padding: 10px 16px; border-radius: 10px; color: #fff; outline: none; font-size: 0.85rem; }
-#user-input:focus { border-color: var(--accent-blue); }
-
-#mic-btn, #send-btn { background: var(--bg-dark-hover); border: 1px solid var(--border-soft); color: white; width: 42px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-#mic-btn.recording { background: #ef4444; animation: pulseMic 1.5s infinite; }
-#mic-btn:hover { background: var(--accent-blue); }
-#send-btn:hover { background: var(--accent-green); }
-
-@keyframes pulseMic {
-    0% { box-shadow: 0 0 0 0 rgba(239, 64, 64, 0.4); }
-    70% { box-shadow: 0 0 0 8px rgba(239, 64, 64, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(239, 64, 64, 0); }
-}
+        recognition.onresult = (event) => {
+            const vozCapturada = event.results[0][0].transcript;
+            input.value = vozCapturada;
+            setTimeout(() => {
+                if (sendBtn) sendBtn.click();
+            }, 500);
+        };
+    } else if (micBtn) {
+        micBtn.style.opacity = '0.3';
+        micBtn.title = 'Entorno de voz bloqueado por el protocolo de archivo local';
+    }
+});
